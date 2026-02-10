@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Math.h"
-#include "Ray.h"
+#include "math.h"
+#include "ray.h"
+
 #include <vector>
 
 class Mesh {

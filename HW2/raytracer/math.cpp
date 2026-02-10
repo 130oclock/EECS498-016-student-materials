@@ -1,15 +1,13 @@
-#include "Math.h"
-#include "Config.h"
+#include "math.h"
+#include "config.h"
 
 #include <algorithm>
 #include <cassert>
 
-Vec3::Vec3(float x, float y, float z) : x(x), y(y), z(z)
-{
-}
+Vec3::Vec3(float x, float y, float z)
+    : x(x), y(y), z(z) {}
 
-Vec3 Vec3::minOfTwo(const Vec3 &v1, const Vec3 &v2)
-{
+Vec3 Vec3::minOfTwo(const Vec3 &v1, const Vec3 &v2) {
     return {
         std::min(v1.x, v2.x),
         std::min(v1.y, v2.y),
@@ -29,85 +27,91 @@ Vec3 Vec3::reflect(const Vec3 &inDir, const Vec3 &normal) {
     return 2 * normal + inDir;
 }
 
-Vec3 Vec3::operator+(const Vec3 &v) const {
+Vec3 &Vec3::operator=(const Vec3 &rhs) {
+    if (this == &rhs)
+        return *this;
+    x = rhs.x;
+    y = rhs.y;
+    z = rhs.z;
+    return *this;
+}
+
+Vec3 &Vec3::operator+=(const Vec3 &rhs) {
+    x += rhs.x;
+    y += rhs.y;
+    z += rhs.z;
+    return *this;
+}
+
+Vec3 &Vec3::operator-=(const Vec3 &rhs) {
+    x -= rhs.x;
+    y -= rhs.y;
+    z -= rhs.z;
+    return *this;
+}
+
+Vec3 &Vec3::operator*=(float rhs) {
+    x *= rhs;
+    y *= rhs;
+    z *= rhs;
+    return *this;
+}
+
+Vec3 &Vec3::operator/=(float rhs) {
+    x /= rhs;
+    y /= rhs;
+    z /= rhs;
+    return *this;
+}
+
+Vec3 operator+(Vec3 lhs, const Vec3 &rhs) { return (lhs += rhs); }
+Vec3 operator-(Vec3 lhs, const Vec3 &rhs) { return (lhs -= rhs); }
+Vec3 operator*(Vec3 lhs, float rhs) { return (lhs *= rhs); }
+Vec3 operator*(float lhs, Vec3 rhs) { return (rhs *= lhs); }
+Vec3 operator/(Vec3 lhs, float rhs) { return (lhs /= rhs); }
+
+Vec3 operator+(const Vec3 &rhs) {
+    Vec3 vector;
+    vector.x = +rhs.x;
+    vector.y = +rhs.y;
+    vector.z = +rhs.z;
+    return vector;
+}
+
+Vec3 operator-(const Vec3 &rhs) {
+    Vec3 vector;
+    vector.x = -rhs.x;
+    vector.y = -rhs.y;
+    vector.z = -rhs.z;
+    return vector;
+}
+
+float Vec3::dot(const Vec3& v1, const Vec3& v2) {
+    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+Vec3 Vec3::cross(const Vec3& v1, const Vec3& v2) {
     return {
-        x + v.x,
-        y + v.y,
-        z + v.z
+        v1.y * v2.z - v1.z * v2.y,
+        v1.z * v2.x - v1.x * v2.z,
+        v1.x * v2.y - v1.y * v2.x
     };
 }
 
-Vec3 Vec3::operator-(const Vec3 &v) const {
-    return {
-        x - v.x, y - v.y, z - v.z
-    };
+float Vec3::getLength() const {
+    return std::sqrt(x * x + y * y + z * z);
 }
 
-Vec3 Vec3::operator-() const {
-    return {
-        -x, -y, -z
-    };
-}
-
-Vec3 Vec3::operator*(float f) const {
-    return {
-        x * f,
-        y * f,
-        z * f
-    };
-}
-
-Vec3 Vec3::operator*(const Vec3 &v) const {
-    return {
-        x * v.x,
-        y * v.y,
-        z * v.z
-    };
-}
-
-Vec3 Vec3::operator/(float f) const {
-    assert (f > 0.0f);
-    return {
-        x / f,
-        y / f, 
-        z / f
-    };
-}
-
-void Vec3::operator+=(const Vec3 &v){
-    *this = *this + v;
+void Vec3::normalize() {
+    float len = getLength();
+    x /= len;
+    y /= len;
+    z /= len;
 }
 
 std::ostream& operator<<(std::ostream& os, const Vec3& v) {
     os << '(' << v.x << ", " << v.y << ", " << v.z << ')';
     return os;
-}
-
-Vec3 operator*(float f, const Vec3 &vec) {
-    return vec * f;
-}
-
-Vec3 Vec3::cross(const Vec3& v) const {
-        return {
-            y * v.z - z * v.y, 
-            z * v.x - x * v.z, 
-            x * v.y - y * v.x
-        };
-    }
-
-    float Vec3::getLength() const {
-        return std::sqrt(x * x + y * y + z * z);
-    }
-
-    void Vec3::normalize() {
-        float len = getLength();
-        x /= len;
-        y /= len;
-        z /= len;
-    }
-
-float Vec3::dot(const Vec3& v) const {
-    return x * v.x + y * v.y + z * v.z;
 }
 
 std::mt19937 Random::generator(SEED);
@@ -129,7 +133,7 @@ Vec3 localDirToWorld(const Vec3& direction, const Vec3& normal) {
         tangent =  { 0, -normal.z, normal.y };
     }
     tangent.normalize();
-    bitangent = tangent.cross(normal);
+    bitangent = Vec3::cross(tangent, normal);
     bitangent.normalize();
 
     // Transform the direction from local coordinates to world coordinates
@@ -138,6 +142,7 @@ Vec3 localDirToWorld(const Vec3& direction, const Vec3& normal) {
     return res;
 }
 
+// TODO
 Vec3 Random::randomHemisphereDirection(const Vec3 &normal) {
     /* 
         Uniformly generate a direction on the hemisphere oriented towards the positive y axis,
@@ -154,6 +159,7 @@ Vec3 Random::randomHemisphereDirection(const Vec3 &normal) {
     return localDirToWorld({x, y, z}, normal);
 }
 
+// TODO
 Vec3 Random::cosWeightedHemisphere(const Vec3 &normal) {
     /* 
         Generate a direction on the hemisphere oriented towards the positive y axis, 

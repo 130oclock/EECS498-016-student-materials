@@ -1,12 +1,14 @@
-#include "Scene.h"
-#include "Config.h"
+#include "scene.h"
+#include "config.h"
+
 #include <iostream>
 #include <filesystem>
 
 #define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
+#include "../thirdparty/tinyobj/tiny_obj_loader.h"
 
 
+// TODO
 Vec3 Scene::trace(const Ray &ray, int bouncesLeft, bool discardEmission) {
     if constexpr(DEBUG) {
         assert (ray.isNormalized());

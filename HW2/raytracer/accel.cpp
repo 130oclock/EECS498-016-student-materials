@@ -1,5 +1,6 @@
-#include "Accel.h"
-#include "Config.h"
+#include "accel.h"
+#include "config.h"
+
 #include <cassert>
 #include <algorithm>
 
@@ -42,8 +43,6 @@ BoundingBox::Extent BoundingBox::maxExtent() const {
 }
 
 float BoundingBox::intersect(const Ray &ray) const {
-    // assert (ray.isNormalized());
-
     float tmin = (minCorner.x - ray.pos.x) / ray.dir.x;
     float tmax = (maxCorner.x - ray.pos.x) / ray.dir.x;
 
@@ -101,8 +100,7 @@ Intersection Object::sample() const {
     return inter;
 }
 
-void Object::constructBoundingBox()
-{
+void Object::constructBoundingBox() {
     assert (!meshes.empty());
 
     box = BoundingBox::constructFromMesh(meshes[0]);
@@ -165,7 +163,7 @@ std::pair<std::vector<Object *>, std::vector<Object *>> BVH::splitObjects(std::v
 Mesh::Mesh(const Vec3 &a, const Vec3 &b, const Vec3 &c) 
     : a(a), b(b), c(c) {
     Vec3 p = b-a, q = c-b;
-    normal = (p).cross(q);
+    normal = Vec3::cross(p, q);
     area = normal.getLength() / 2;
     normal.normalize();
 }
@@ -174,16 +172,16 @@ float Mesh::intersect(const Ray &ray) {
     if constexpr(DEBUG) {
         assert (ray.isNormalized());
     }
-    float proj = ray.dir.dot(normal);
+    float proj = Vec3::dot(ray.dir, normal);
 
     // we ignore intersection with the backface
     if (proj > 0) return std::numeric_limits<float>::max();
     
     // find the plane defined by this triangle mesh
     // plane expression: n dot x + delta = 0
-    float delta = -normal.dot(a);
+    float delta = Vec3::dot(-normal, a);
 
-    float time = - (delta + normal.dot(ray.pos)) / proj;
+    float time = - (delta + Vec3::dot(normal, ray.pos)) / proj;
     if (time < 0) return std::numeric_limits<float>::max();
     
     Vec3 inter = ray.travel(time);
@@ -199,7 +197,7 @@ Vec3 Mesh::sample() const {
 bool Mesh::isPointInsideMesh(const Vec3& point) const {
     Vec3 i = point - a, j = point - b, k = point - c;
     auto isValid = [this](const Vec3& m, const Vec3& n) -> bool {
-        return m.cross(n).dot(normal) > 0;
+        return Vec3::dot(Vec3::cross(m, n), normal) > 0;
         };
     return isValid(i, j) && isValid(j, k) && isValid(k, i);
 }
@@ -259,7 +257,7 @@ Vec3 Intersection::getEmission() const {
 Vec3 Intersection::calcBRDF(const Vec3& inDir, const Vec3& outDir) const {
     assert (happened);
     const Vec3& normal = mesh->normal;
-    if (inDir.dot(normal) > 0 || outDir.dot(normal) < 0) return {};
+    if (Vec3::dot(inDir, normal) > 0 || Vec3::dot(outDir, normal) < 0) return {};
     // BRDF of a diffuse object
     /*-----------------------------------------------------------*/
     return getDiffuseColor() / PI;

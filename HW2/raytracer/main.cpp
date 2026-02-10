@@ -1,5 +1,5 @@
-#include "Scene.h"
-#include "Config.h"
+#include "scene.h"
+#include "config.h"
 
 #include <filesystem>
 #include <fstream>
