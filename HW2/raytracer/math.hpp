@@ -50,6 +50,14 @@ class Random {
 public:
     // Generate a random float in [0, 1)
     static float randUniformFloat();
+
+    /**
+     * Computes a random direction around a hemisphere pointed in the direction of `normal`.
+     */
     static Vec3 randomHemisphereDirection(const Vec3& normal);
+
+    /**
+     * Computes a random direction around a hemisphere pointed in the direction of `normal`, weighted by the cos term.
+     */
     static Vec3 cosWeightedHemisphere(const Vec3& normal);
 };

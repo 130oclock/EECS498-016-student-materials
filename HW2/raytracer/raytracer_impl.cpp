@@ -1,6 +1,7 @@
 #include "ray.hpp"
 #include "math.hpp"
 #include "scene.hpp"
+#include "accel.hpp"
 #include "config.hpp"
 
 #include <cassert>
