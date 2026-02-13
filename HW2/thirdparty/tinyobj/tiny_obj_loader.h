@@ -382,7 +382,7 @@ struct points_t {
 
 struct shape_t {
   std::string name;
-  mesh_t triangle;
+  mesh_t mesh;
   lines_t lines;
   points_t points;
 };
@@ -1586,33 +1586,33 @@ static bool exportGroupsToShape(shape_t *shape, const PrimGroup &prim_group,
 
           if (sqr02 < sqr13) {
             // [0, 1, 2], [0, 2, 3]
-            shape->triangle.indices.push_back(idx0);
-            shape->triangle.indices.push_back(idx1);
-            shape->triangle.indices.push_back(idx2);
+            shape->mesh.indices.push_back(idx0);
+            shape->mesh.indices.push_back(idx1);
+            shape->mesh.indices.push_back(idx2);
 
-            shape->triangle.indices.push_back(idx0);
-            shape->triangle.indices.push_back(idx2);
-            shape->triangle.indices.push_back(idx3);
+            shape->mesh.indices.push_back(idx0);
+            shape->mesh.indices.push_back(idx2);
+            shape->mesh.indices.push_back(idx3);
           } else {
             // [0, 1, 3], [1, 2, 3]
-            shape->triangle.indices.push_back(idx0);
-            shape->triangle.indices.push_back(idx1);
-            shape->triangle.indices.push_back(idx3);
+            shape->mesh.indices.push_back(idx0);
+            shape->mesh.indices.push_back(idx1);
+            shape->mesh.indices.push_back(idx3);
 
-            shape->triangle.indices.push_back(idx1);
-            shape->triangle.indices.push_back(idx2);
-            shape->triangle.indices.push_back(idx3);
+            shape->mesh.indices.push_back(idx1);
+            shape->mesh.indices.push_back(idx2);
+            shape->mesh.indices.push_back(idx3);
           }
 
           // Two triangle faces
-          shape->triangle.num_face_vertices.push_back(3);
-          shape->triangle.num_face_vertices.push_back(3);
+          shape->mesh.num_face_vertices.push_back(3);
+          shape->mesh.num_face_vertices.push_back(3);
 
-          shape->triangle.material_ids.push_back(material_id);
-          shape->triangle.material_ids.push_back(material_id);
+          shape->mesh.material_ids.push_back(material_id);
+          shape->mesh.material_ids.push_back(material_id);
 
-          shape->triangle.smoothing_group_ids.push_back(face.smoothing_group_id);
-          shape->triangle.smoothing_group_ids.push_back(face.smoothing_group_id);
+          shape->mesh.smoothing_group_ids.push_back(face.smoothing_group_id);
+          shape->mesh.smoothing_group_ids.push_back(face.smoothing_group_id);
 
         } else {
 #ifdef TINYOBJLOADER_USE_MAPBOX_EARCUT
@@ -1912,13 +1912,13 @@ static bool exportGroupsToShape(shape_t *shape, const PrimGroup &prim_group,
               idx2.normal_index = ind[2].vn_idx;
               idx2.texcoord_index = ind[2].vt_idx;
 
-              shape->triangle.indices.push_back(idx0);
-              shape->triangle.indices.push_back(idx1);
-              shape->triangle.indices.push_back(idx2);
+              shape->mesh.indices.push_back(idx0);
+              shape->mesh.indices.push_back(idx1);
+              shape->mesh.indices.push_back(idx2);
 
-              shape->triangle.num_face_vertices.push_back(3);
-              shape->triangle.material_ids.push_back(material_id);
-              shape->triangle.smoothing_group_ids.push_back(
+              shape->mesh.num_face_vertices.push_back(3);
+              shape->mesh.material_ids.push_back(material_id);
+              shape->mesh.smoothing_group_ids.push_back(
                   face.smoothing_group_id);
             }
 
@@ -1950,13 +1950,13 @@ static bool exportGroupsToShape(shape_t *shape, const PrimGroup &prim_group,
               idx2.normal_index = i2.vn_idx;
               idx2.texcoord_index = i2.vt_idx;
 
-              shape->triangle.indices.push_back(idx0);
-              shape->triangle.indices.push_back(idx1);
-              shape->triangle.indices.push_back(idx2);
+              shape->mesh.indices.push_back(idx0);
+              shape->mesh.indices.push_back(idx1);
+              shape->mesh.indices.push_back(idx2);
 
-              shape->triangle.num_face_vertices.push_back(3);
-              shape->triangle.material_ids.push_back(material_id);
-              shape->triangle.smoothing_group_ids.push_back(
+              shape->mesh.num_face_vertices.push_back(3);
+              shape->mesh.material_ids.push_back(material_id);
+              shape->mesh.smoothing_group_ids.push_back(
                   face.smoothing_group_id);
             }
           }
@@ -1968,18 +1968,18 @@ static bool exportGroupsToShape(shape_t *shape, const PrimGroup &prim_group,
           idx.vertex_index = face.vertex_indices[k].v_idx;
           idx.normal_index = face.vertex_indices[k].vn_idx;
           idx.texcoord_index = face.vertex_indices[k].vt_idx;
-          shape->triangle.indices.push_back(idx);
+          shape->mesh.indices.push_back(idx);
         }
 
-        shape->triangle.num_face_vertices.push_back(
+        shape->mesh.num_face_vertices.push_back(
             static_cast<unsigned int>(npolys));
-        shape->triangle.material_ids.push_back(material_id);  // per face
-        shape->triangle.smoothing_group_ids.push_back(
+        shape->mesh.material_ids.push_back(material_id);  // per face
+        shape->mesh.smoothing_group_ids.push_back(
             face.smoothing_group_id);  // per face
       }
     }
 
-    shape->triangle.tags = tags;
+    shape->mesh.tags = tags;
   }
 
   // line
@@ -2940,7 +2940,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
                                      triangulate, v, warn);
       (void)ret;  // return value not used.
 
-      if (shape.triangle.indices.size() > 0) {
+      if (shape.mesh.indices.size() > 0) {
         shapes->push_back(shape);
       }
 
@@ -2992,7 +2992,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
                                      triangulate, v, warn);
       (void)ret;  // return value not used.
 
-      if (shape.triangle.indices.size() > 0 || shape.lines.indices.size() > 0 ||
+      if (shape.mesh.indices.size() > 0 || shape.lines.indices.size() > 0 ||
           shape.points.indices.size() > 0) {
         shapes->push_back(shape);
       }
@@ -3133,7 +3133,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
   // line.
   // we also add `shape` to `shapes` when `shape.mesh` has already some
   // faces(indices)
-  if (ret || shape.triangle.indices
+  if (ret || shape.mesh.indices
                  .size()) {  // FIXME(syoyo): Support other prims(e.g. lines)
     shapes->push_back(shape);
   }

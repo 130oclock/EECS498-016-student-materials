@@ -16,8 +16,8 @@ BoundingBox BoundingBox::boxUnion(const BoundingBox& b1, const BoundingBox& b2) 
 
 BoundingBox BoundingBox::constructFromTriangle(const Triangle &triangle) {
     return {
-        Vec3::minOfTwo(Vec3::minOfTwo(triangle.a, triangle.b), triangle.c), 
-        Vec3::maxOfTwo(Vec3::maxOfTwo(triangle.a, triangle.b), triangle.c)
+        Vec3::minOfTwo(Vec3::minOfTwo(triangle.v1, triangle.v2), triangle.v3), 
+        Vec3::maxOfTwo(Vec3::maxOfTwo(triangle.v1, triangle.v2), triangle.v3)
     };
 }
 
@@ -161,7 +161,7 @@ std::pair<std::vector<Object *>, std::vector<Object *>> BVH::splitObjects(std::v
 }
 
 Triangle::Triangle(const Vec3 &a, const Vec3 &b, const Vec3 &c) 
-    : a(a), b(b), c(c) {
+    : v1(a), v2(b), v3(c) {
     Vec3 p = b-a, q = c-b;
     normal = Vec3::cross(p, q);
     area = normal.getLength() / 2;
@@ -187,11 +187,11 @@ float Triangle::intersect(const Ray &ray) {
 
 Vec3 Triangle::sample() const {
     float m = std::sqrt(Random::randUniformFloat()), n = Random::randUniformFloat();
-    return a * (1.0f - m) + b * (m * (1.0f - n)) + c * (m * n);
+    return v1 * (1.0f - m) + v2 * (m * (1.0f - n)) + v3 * (m * n);
 }
 
 bool Triangle::isPointInsideTriangle(const Vec3& point) const {
-    Vec3 i = point - a, j = point - b, k = point - c;
+    Vec3 i = point - v1, j = point - v2, k = point - v3;
     auto isValid = [this](const Vec3& m, const Vec3& n) -> bool {
         return Vec3::dot(Vec3::cross(m, n), normal) > 0;
     };

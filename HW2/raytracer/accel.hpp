@@ -7,9 +7,7 @@
 
 class Triangle {
 public:
-    Vec3 a;
-    Vec3 b;
-    Vec3 c;
+    Vec3 v1, v2, v3;
     Vec3 normal;
     float area;
     Triangle(const Vec3& a, const Vec3& b, const Vec3& c);

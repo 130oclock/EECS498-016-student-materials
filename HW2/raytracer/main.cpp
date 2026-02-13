@@ -49,9 +49,10 @@ int main() {
     for (size_t y = 0; y < height; y++) {
         for (size_t x = 0; x < width; x++) {
             static unsigned char color[3];
-            color[0] = toLinear(image[y][x].x);
-            color[1] = toLinear(image[y][x].y);
-            color[2] = toLinear(image[y][x].z);
+            size_t invY = height - 1 - y;
+            color[0] = toLinear(image[invY][x].x);
+            color[1] = toLinear(image[invY][x].y);
+            color[2] = toLinear(image[invY][x].z);
             fwrite(color, 1, 3, fp);
         }
     }

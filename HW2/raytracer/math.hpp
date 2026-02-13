@@ -29,7 +29,7 @@ public:
     static Vec3 cross(const Vec3& v1, const Vec3& v2);
 
     float getLength() const;
-    Vec3 &Vec3::normalize();
+    Vec3 &normalize();
 };
 
 Vec3 operator+(Vec3 lhs, const Vec3 &rhs);

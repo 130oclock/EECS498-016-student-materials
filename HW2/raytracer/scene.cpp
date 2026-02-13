@@ -32,13 +32,13 @@ void Scene::addObjects(std::string_view modelPath, std::string_view searchPath) 
         object->name = shapes[s].name;
         // Loop over faces(polygon)
         size_t index_offset = 0;
-        for (size_t f = 0; f < shapes[s].triangle.num_face_vertices.size(); f++) {
-            size_t fv = size_t(shapes[s].triangle.num_face_vertices[f]);
+        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+            size_t fv = size_t(shapes[s].mesh.num_face_vertices[f]);
             std::vector<Vec3> positions;
             // Loop over vertices in the face.
             for (size_t v = 0; v < fv; v++) {
                 // access to vertex
-                tinyobj::index_t idx = shapes[s].triangle.indices[index_offset + v];
+                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
                 tinyobj::real_t vx = attrib.vertices[3*size_t(idx.vertex_index)+0];
                 tinyobj::real_t vy = attrib.vertices[3*size_t(idx.vertex_index)+1];
                 tinyobj::real_t vz = attrib.vertices[3*size_t(idx.vertex_index)+2];
@@ -51,8 +51,8 @@ void Scene::addObjects(std::string_view modelPath, std::string_view searchPath) 
             object->triangles.push_back(std::move(triangle));
         } // per-face
         object->constructBoundingBox();
-        // we assume each object uses only a single material for all triangles
-        auto materialId = shapes[s].triangle.material_ids[0];
+        // we assume each object uses only a single material for all.mesh.
+        auto materialId = shapes[s].mesh.material_ids[0];
         auto& material = materials[materialId];
         object->kd = Vec3 {
             material.diffuse[0],
