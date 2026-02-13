@@ -22,7 +22,7 @@ void spawnRays(size_t width, size_t height, Vec3 cameraPosition, Scene &scene, s
 }
 
 // TODO
-float timeOfIntersection(const Ray& ray){
+float Triangle::timeOfIntersection(const Ray& ray){
 
     // TODO...
     
