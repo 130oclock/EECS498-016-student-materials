@@ -30,7 +30,7 @@ public:
      * @param bouncesLeft     the number of bounces until the ray ends
      * @param discardEmission whether to discard the emission (direct radiance) from objects
      */
-    Vec3 trace(const Ray& ray, int bouncesLeft = 2, bool discardEmission = false);
+    Color trace(const Ray& ray, int bouncesLeft = 2, bool discardEmission = false);
     ~Scene();
 };
 

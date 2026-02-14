@@ -32,6 +32,8 @@ public:
     Vec3 &normalize();
 };
 
+typedef Vec3 Color;
+
 Vec3 operator+(Vec3 lhs, const Vec3 &rhs);
 Vec3 operator-(Vec3 lhs, const Vec3 &rhs);
 Vec3 operator*(Vec3 lhs, float rhs);

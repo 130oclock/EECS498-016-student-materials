@@ -9,7 +9,7 @@ void spawnRays(size_t width, size_t height, Vec3 cameraPosition, Scene &scene, s
     for (size_t y = 0; y < height; y++) {
         for (size_t x = 0; x < width; x++) {
             Vec3 pixel = {(float)x + 0.5f, (float)y + 0.5f, 0.0f};
-            Vec3 color;
+            Color color;
 
             // TODO...
 
@@ -28,7 +28,7 @@ float Triangle::timeOfIntersection(const Ray& ray) {
 }
 
 // TODO
-Vec3 Scene::trace(const Ray &ray, int bouncesLeft, bool discardEmission) {
+Color Scene::trace(const Ray &ray, int bouncesLeft, bool discardEmission) {
 
     // TODO...
     
