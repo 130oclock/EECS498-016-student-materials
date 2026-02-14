@@ -4,8 +4,6 @@
 #include "accel.hpp"
 #include "config.hpp"
 
-#include <cassert>
-
 // TODO
 void spawnRays(size_t width, size_t height, Vec3 cameraPosition, Scene &scene, std::vector<std::vector<Vec3>> &image) {
     for (size_t y = 0; y < height; y++) {
@@ -22,7 +20,7 @@ void spawnRays(size_t width, size_t height, Vec3 cameraPosition, Scene &scene, s
 }
 
 // TODO
-float Triangle::timeOfIntersection(const Ray& ray){
+float Triangle::timeOfIntersection(const Ray& ray) {
 
     // TODO...
     
@@ -31,10 +29,6 @@ float Triangle::timeOfIntersection(const Ray& ray){
 
 // TODO
 Vec3 Scene::trace(const Ray &ray, int bouncesLeft, bool discardEmission) {
-    if constexpr(DEBUG) {
-        assert(ray.isNormalized());
-    }
-    if (bouncesLeft < 0) return {};
 
     // TODO...
     
