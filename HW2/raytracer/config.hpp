@@ -14,6 +14,6 @@ constexpr float RR = 0.8f;
 
 constexpr std::string_view OBJ_PATH = "../models/cornellBox/CornellBox-Original.obj";
 constexpr std::string_view MTL_SEARCH_DIR = "../models/cornellBox/";
-constexpr std::string_view OUTPUT_PATH = "../binary.ppm";
+constexpr std::string_view OUTPUT_PATH = "../output.png";
 
 constexpr bool DEBUG = false; // reserved for future use. Do not enable it currently.

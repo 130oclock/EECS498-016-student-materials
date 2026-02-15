@@ -1,3 +1,6 @@
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "../thirdparty/stb/stb_image_write.h"
+
 #include "scene.hpp"
 #include "config.hpp"
 
@@ -44,18 +47,22 @@ int main() {
 
     std::filesystem::path outPath = std::filesystem::absolute(OUTPUT_PATH);
 
-    FILE* fp = fopen(outPath.string().c_str(), "wb");
-    (void)fprintf(fp, "P6\n%d %d\n255\n", width, height);
+    unsigned char imageData[width * height * 3];
+
     for (size_t y = 0; y < height; y++) {
         for (size_t x = 0; x < width; x++) {
-            static unsigned char color[3];
-            size_t invY = height - 1 - y;
-            color[0] = toLinear(image[invY][x].x);
-            color[1] = toLinear(image[invY][x].y);
-            color[2] = toLinear(image[invY][x].z);
-            fwrite(color, 1, 3, fp);
+            size_t i = (y * width + x) * 3;
+            imageData[i + 0] = toLinear(image[y][x].x);
+            imageData[i + 1] = toLinear(image[y][x].y);
+            imageData[i + 2] = toLinear(image[y][x].z);
         }
     }
-    fclose(fp);
-    std::cout << "Output image written to " << outPath << '\n';
+
+    std::cout << "Writing to PNG with resolution " << RESOLUTION << "\n";
+    stbi_flip_vertically_on_write(true);
+    
+    int info;
+    info = stbi_write_png(outPath.c_str(), width, height, 3, imageData, 0);
+    if (!info)
+        std::cerr << "Writing to " << outPath << ".png failed." << std::endl;
 }
